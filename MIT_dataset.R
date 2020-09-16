@@ -27,7 +27,7 @@ obs_nodes_mat<-matrix(1,nrow=96,ncol=32)
 clust1<-clust_on_mat_eig(layer_sum,2)
 clust2<-lmfo_miss(tensAdj,obs_nodes_mat,2)
 clust3<-kpod(final_aggr_miss(tensAdj,2,obs_nodes_mat),2)$cluster
-#clust3<-kmeans(final_aggr_miss(tensAdj,2,obs_nodes_mat),2)$cluster
+clust3<-kmeans(final_aggr_miss(tensAdj,2,obs_nodes_mat),2)$cluster
 
 #kpod clust is very sensitive to initialization ? Error in final_aggr_miss : should use svds()
 NMI(clust1,clust2)
@@ -64,10 +64,10 @@ simulMiss<-function(nb, rho, convZ, K=2){
     score[1,i]<-NMI(clust,convZ_del)
     
     ## kpod_clust
-    tot_obs_nodes<-tot_obs_nodes%>%as.logical()
-    final_ag<-final_aggr_miss(tensorAdj_del,K,obs_nodes_mat_del)
-    clust<-kpod(final_ag,K)$cluster
-    score[2,i]<-NMI(clust,convZ_del)
+    # tot_obs_nodes<-tot_obs_nodes%>%as.logical()
+    # final_ag<-final_aggr_miss(tensorAdj_del,K,obs_nodes_mat_del)
+    # clust<-kpod(final_ag,K)$cluster
+    # score[2,i]<-NMI(clust,convZ_del)
     
     ## OLMF modified for missing nodes
     n_obs<-dim(tensorAdj_del0)[1]
@@ -91,4 +91,11 @@ simulMiss<-function(nb, rho, convZ, K=2){
 }
 
 
-sapply(seq(0.1,1,by=0.1),function(x){return(simulMiss(1,x,clust1))})
+score<-array(NA,dim=c(10,4))
+score[1,]<-simulMiss(1,0.1,clust1)
+
+"for(r in seq(0.1,1,by=0.1)){
+  score[r*10,]<-simulMiss(50,r,clust1)
+}
+
+sapply(seq(0.1,1,by=0.1),function(x){return(simulMiss(2,x,clust1))})

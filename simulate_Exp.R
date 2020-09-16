@@ -18,6 +18,8 @@ library(gridExtra)
 library(lemon)
 library(latex2exp)
 library(GreedySBTM)
+library(xtable)
+library(stargazer)
 
 #############################
 # Results on simulated data #

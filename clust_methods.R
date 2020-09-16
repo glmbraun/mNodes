@@ -58,16 +58,25 @@ final_aggr_miss<-function(sampleMLSBM,k,obs_nodes_mat){
   obs_nodes_l<-obs_nodes_mat[,1]%>%as.logical()
   eig<-matrix(0,nrow=n,ncol=k)
   flat_eig<-matrix(NA,nrow=n,ncol=k)
-  flat_eig[obs_nodes_l,]<-svds(sampleMLSBM[obs_nodes_l,obs_nodes_l,1],k)$u
+  flat_eig[obs_nodes_l,]<-svd(sampleMLSBM[obs_nodes_l,obs_nodes_l,1],k)$u
   for(l in 2:L){
     obs_nodes_l<-obs_nodes_mat[,l]%>%as.logical()
     eig2<-matrix(NA,nrow=n,ncol=k)
     c<-sampleMLSBM[obs_nodes_l,obs_nodes_l,l]
-    eig2[obs_nodes_l,]<-svds(sampleMLSBM[obs_nodes_l,obs_nodes_l,l],k)$u
+    eig2[obs_nodes_l,]<-svd(sampleMLSBM[obs_nodes_l,obs_nodes_l,l],k)$u
     flat_eig<-cbind(flat_eig,eig2)
   }
   return(flat_eig)
 }
+
+
+miss<-missMLSBM(tensAdj,rho,with_na = TRUE)
+tensAdj_m<-miss[[1]]
+tot_obs_nodes<-miss[[2]]
+obs_nodes_mat<-miss[[3]]
+
+final_aggr_miss(tensorAdj_del,2,obs_nodes_mat_del )
+
 
 # Missing nodes imputation
 
